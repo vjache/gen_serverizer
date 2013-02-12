@@ -17,9 +17,10 @@ For me, its good idea to have functionality accesible remotely through
 
 ## Example
 
-   :::erlang
+```erlang
    1> gen_serverizer:create_global_server_from_module(lists).
    {global,lists}
    2> gen_server:call({global, lists}, {max, [1,2,3,4,5,6]}).
    {ok, 6}
+```
 
