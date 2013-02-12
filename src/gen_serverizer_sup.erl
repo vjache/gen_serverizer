@@ -19,7 +19,13 @@
 %% ===================================================================
 
 start_link() ->
-    supervisor:start_link({local, ?MODULE}, ?MODULE, []).
+    case supervisor:start_link({local, ?MODULE}, ?MODULE, []) of
+	{ok, _} = Ret ->
+	    BootstrapModules = gen_serverizer_app:get_bootstrap_modules(),
+	    [ gen_serverizer:create_global_server_from_module(M) || M <- BootstrapModules],
+	    Ret;
+	Ret -> Ret
+    end.
 
 start_child(ServerName) ->
     Mod = gen_serverizer_srv,
@@ -46,5 +52,5 @@ start_child_from_module(ServerName, Module, CallNameTranFun, Opts) ->
 %% ===================================================================
 
 init([]) ->
-    {ok, { {one_for_one, 5, 10}, []} }.
+    {ok, { {one_for_one, 10, 10}, []} }.
 
